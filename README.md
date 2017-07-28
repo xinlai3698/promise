@@ -1,13 +1,11 @@
 # Promise
 
----
-
 ## Promise是什么
 
 ---
 
 ### 回调函数
-```
+```php
 setTimeout(function () {
    console.log('callback...');
 }, 1000);
@@ -32,7 +30,31 @@ setTimeout(function () {
 ### Promise是对象？函数？数组？
 ![](./img/promise.png)
 
+- Promise是一个构造函数，自己身上有all、reject、resolve这几个方法，原型上有then、catch方法;
+- Promise的构造函数接收一个参数，是函数，并且传入两个参数：resolve，reject，分别表示异步操作执行成功后的回调函数和异步操作执行失败后的回调函数
+- 用Promise的时候一般是包在一个函数中，在需要的时候去运行这个函数
+- 执行这个函数我们得到了一个Promise对象,同时也就可以使用他的then和catch方法了
+```javascript
+	function testPromise(){
+		var p = new Promise(function(resolve, reject){
+			//做一些异步操作
+        setTimeout(function(){
+            console.log('执行完成');
+            resolve('随便什么数据');
+        }, 2000);
+		});
+		return p; 
+	}
+
+	testPromise().then(function(data){
+    console.log(data);
+    //后面可以用传过来的数据做些其他操作
+  });
+
+```
+
 ## Promise原理分析
+![](./img/promise2.png)
 
 ---
 
