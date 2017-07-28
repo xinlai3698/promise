@@ -34,7 +34,7 @@ function runAsync3(){
     return p;            
 }
 
-runAsync1()
+/*runAsync1()
 .then(function(data){
     console.log(data);
     return runAsync2();
@@ -45,7 +45,7 @@ runAsync1()
 })
 .then(function(data){
     console.log(data);
-});
+});*/
 
 
 /**
@@ -109,3 +109,13 @@ function c1(){
 .then(function(data){
     console.log(data);
 });*/
+
+
+/**
+ * 使用 all方法
+ */
+Promise
+.all([runAsync1(), runAsync2(), runAsync3()])
+.then(function(results){
+    console.log(results);
+});

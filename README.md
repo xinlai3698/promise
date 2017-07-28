@@ -64,7 +64,7 @@ pending是对象创建后的初始状态，当对象fulfill（成功）时变为
 
 ## Promise实例方法介绍
 
-### then链式操作方法，简化层层回调
+### then：链式操作方法，简化层层回调
 ```javascript
 function runAsync1(){
     var p = new Promise(function(resolve, reject){
@@ -117,7 +117,7 @@ runAsync1()
 
 ![](./img/promise3.png)
 
-### 使用reject 如果执行失败，就可以在then中进行捕获
+### reject： 如果执行失败，就可以在then中进行捕获
 ```javascript
 function getNumber(){
     var p = new Promise(function(resolve, reject){
@@ -160,4 +160,72 @@ Promise
 - Promise的all方法提供了并行执行异步操作的能力，并且在所有异步操作执行完后才执行回调
 - all接收一个数组参数，里面的值最终都算返回Promise对象。这样，三个异步操作的并行执行的，等到它们都执行完后才会进到then里面
 - 使用场景：有了all，你就可以并行执行多个异步操作，并且在一个回调中处理所有的返回数据
+
+### race用法
+```javascript
+//请求某个图片资源
+function requestImg(){
+    var p = new Promise(function(resolve, reject){
+        var img = new Image();
+        img.onload = function(){
+            resolve(img);
+        }
+        img.src = 'xxxxxx';
+    });
+    return p;
+}
+
+//延时函数，用于给请求计时
+function timeout(){
+    var p = new Promise(function(resolve, reject){
+        setTimeout(function(){
+            reject('图片请求超时');
+        }, 5000);
+    });
+    return p;
+}
+
+Promise
+.race([requestImg(), timeout()])
+.then(function(results){
+    console.log(results);
+})
+.catch(function(reason){
+    console.log(reason);
+});
+```
+
+- all方法的效果实际上是「谁跑的慢，以谁为准执行回调」，那么相对的就有另一个方法「谁跑的快，以谁为准执行回调」，这就是race方法
+- 这个操作特别像从服务端请求一张图片资源，如果超时则为失败，如果正常，加载图片
+
+### catch用法
+```javascript
+getNumber()
+.then(function(data){
+    console.log('resolved');
+    console.log(data);
+})
+.catch(function(reason){
+    console.log('rejected');
+    console.log(reason);
+});
+
+
+
+getNumber()
+.then(function(data){
+    console.log('resolved');
+    console.log(data);
+    console.log(somedata); //此处的somedata未定义
+})
+.catch(function(reason){
+    console.log('rejected');
+    console.log(reason);
+});
+```
+- 它和then的第二个参数reject一样，用来指定reject的回调
+- 在执行resolve的回调（也就是上面then中的第一个参数）时，如果抛出异常了（代码出错了），不会报错卡死，而是会进到这个catch方法中
+- 总结：链式执行过程中如果有报错，都会进到catch方法中
+
+
 
