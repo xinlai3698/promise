@@ -34,6 +34,7 @@ takePicture(event, function (pngData) {
 - Promise的构造函数接收一个参数，是函数，并且传入两个参数：resolve，reject，分别表示异步操作执行成功后的回调函数和异步操作执行失败后的回调函数
 - 用Promise的时候一般是包在一个函数中，在需要的时候去运行这个函数
 - 执行这个函数我们得到了一个Promise对象,同时也就可以使用他的then和catch方法了
+
 ```javascript
 function testPromise(){
 var p = new Promise(function(resolve, reject){
@@ -62,3 +63,55 @@ pending是对象创建后的初始状态，当对象fulfill（成功）时变为
 ---
 
 ## Promise实例方法介绍
+
+### then链式操作方法，简化层层回调
+```javascript
+function runAsync1(){
+    var p = new Promise(function(resolve, reject){
+        //做一些异步操作
+        setTimeout(function(){
+            console.log('异步任务1执行完成');
+            resolve('随便什么数据1');
+        }, 1000);
+    });
+    return p;            
+}
+function runAsync2(){
+    var p = new Promise(function(resolve, reject){
+        //做一些异步操作
+        setTimeout(function(){
+            console.log('异步任务2执行完成');
+            resolve('随便什么数据2');
+        }, 2000);
+    });
+    return p;            
+}
+function runAsync3(){
+    var p = new Promise(function(resolve, reject){
+        //做一些异步操作
+        setTimeout(function(){
+            console.log('异步任务3执行完成');
+            resolve('随便什么数据3');
+        }, 2000);
+    });
+    return p;            
+}
+```
+执行下面的代码：
+runAsync1()
+.then(function(data){
+    console.log(data);
+    return runAsync2();
+})
+.then(function(data){
+    console.log(data);
+    return runAsync3();
+})
+.then(function(data){
+    console.log(data);
+});
+
+执行结果：
+![](./img/promise3.png)
+
+
