@@ -98,6 +98,7 @@ function runAsync3(){
 }
 ```
 执行下面的代码：
+```javascript
 runAsync1()
 .then(function(data){
     console.log(data);
@@ -110,8 +111,53 @@ runAsync1()
 .then(function(data){
     console.log(data);
 });
+```
 
 执行结果：
+
 ![](./img/promise3.png)
 
+### 使用reject 如果执行失败，就可以在then中进行捕获
+```javascript
+function getNumber(){
+    var p = new Promise(function(resolve, reject){
+        //做一些异步操作
+        setTimeout(function(){
+            var num = Math.ceil(Math.random()*10); //生成1-10的随机数
+            if(num<=5){
+                resolve(num);
+            }
+            else{
+                reject('数字太大了');
+            }
+        }, 2000);
+    });
+    return p;            
+}
+
+getNumber()
+.then(
+    function(data){
+        console.log('resolved');
+        console.log(data);
+    }, 
+    function(reason, data){
+        console.log('rejected');
+        console.log(reason);
+    }
+);
+```
+
+### all用法
+```javascript
+Promise
+.all([runAsync1(), runAsync2(), runAsync3()])
+.then(function(results){
+    console.log(results);
+});
+```
+
+- Promise的all方法提供了并行执行异步操作的能力，并且在所有异步操作执行完后才执行回调
+- all接收一个数组参数，里面的值最终都算返回Promise对象。这样，三个异步操作的并行执行的，等到它们都执行完后才会进到then里面
+- 使用场景：有了all，你就可以并行执行多个异步操作，并且在一个回调中处理所有的返回数据
 
