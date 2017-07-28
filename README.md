@@ -7,7 +7,8 @@
 ---
 
 ### 回调函数
-```setTimeout(function () {
+```
+setTimeout(function () {
    console.log('callback...');
 }, 1000);
 ```
